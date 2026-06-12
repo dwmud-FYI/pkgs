@@ -57,9 +57,14 @@ jobs:
   # Keep the AUR listing in step with the same PKGBUILD that built the binary repo.
   # Idempotent — identical PKGBUILD/.SRCINFO on the AUR means no push. Gated behind
   # build-push so a broken repo build never advances the AUR either.
+  #
+  # Runs on GitHub-hosted (free for public repos), NOT the cluster runners: the job
+  # needs no cluster access, and the AUR's edge fights the DinD container network on
+  # the ARC runners (https resets, ssh hangs) while hosted egress works fine.
   aur-publish:
-    runs-on: dwmud
+    runs-on: ubuntu-latest
     needs: build-push
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
