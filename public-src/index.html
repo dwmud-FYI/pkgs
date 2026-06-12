@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pkgs.dwmud.FYI — package repository</title>
+<style>
+  body { font-family: ui-monospace, monospace; max-width: 46rem; margin: 3rem auto; padding: 0 1rem;
+         background: #1a1308; color: #e8dcc3; line-height: 1.5; }
+  h1 { color: #d9a528; } h2 { color: #d9a528; margin-top: 2.5rem; }
+  pre { background: #241b0d; border: 1px solid #4a3a1a; border-radius: 6px; padding: .8rem; overflow-x: auto; }
+  a { color: #d9a528; }
+  .muted { color: #9c8e6e; font-size: .9em; }
+</style>
+</head>
+<body>
+<h1>pkgs.dwmud.FYI</h1>
+<p>Package repository for the Discworld MUD community — currently home to
+<a href="https://callmecarlos.com/">Luggage</a>, Carlos's Discworld MUD client.
+Run by <a href="https://dwmud.fyi/">dwmud.FYI</a>.</p>
+
+<h2>Debian / Ubuntu (apt)</h2>
+<pre>sudo curl -fsSL https://pkgs.dwmud.fyi/key.asc -o /etc/apt/keyrings/dwmud.asc
+echo "deb [signed-by=/etc/apt/keyrings/dwmud.asc] https://pkgs.dwmud.fyi/apt stable main" | sudo tee /etc/apt/sources.list.d/dwmud.list
+sudo apt update
+sudo apt install luggage</pre>
+
+<h2>Fedora / RHEL-family (dnf)</h2>
+<pre>sudo curl -fsSL https://pkgs.dwmud.fyi/rpm/dwmud.repo -o /etc/yum.repos.d/dwmud.repo
+sudo dnf install luggage</pre>
+<p class="muted">The rpm repo is live but waiting on its first package — configure it now and
+<code>dnf</code> picks Luggage up the moment it lands.</p>
+
+<h2>Signing</h2>
+<p>Repository metadata is signed with
+<a href="/key.asc">dwmud.FYI Package Repository &lt;pkgs@dwmud.fyi&gt;</a>
+(<code>1D19FE3C95B59712</code>). Package files are upstream's, byte for byte —
+the signed metadata's checksums cover their integrity.</p>
+
+<p class="muted">Browse: <a href="/apt/">/apt/</a> · <a href="/rpm/">/rpm/</a></p>
+</body>
+</html>

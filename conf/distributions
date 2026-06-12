@@ -1,0 +1,7 @@
+Origin: dwmud.FYI
+Label: dwmud.FYI
+Codename: stable
+Architectures: amd64 arm64
+Components: main
+Description: Packages for the Discworld MUD community (Luggage and friends)
+SignWith: 1D19FE3C95B59712

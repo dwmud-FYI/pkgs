@@ -1,0 +1,63 @@
+# Static package-repo host (apt + rpm trees baked into the image by CI).
+# Same shape as dwmud-web: DHI nginx on 8080, ghcr pull, Traefik IngressRoute.
+#   KUBECONFIG=... kubectl apply -f deploy/k8s/pkgs.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dwmud-pkgs
+  namespace: dwmud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dwmud-pkgs
+  template:
+    metadata:
+      labels:
+        app: dwmud-pkgs
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull
+      containers:
+        - name: pkgs
+          image: ghcr.io/dwmud-fyi/dwmud-pkgs:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dwmud-pkgs
+  namespace: dwmud
+spec:
+  selector:
+    app: dwmud-pkgs
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dwmud-pkgs-https
+  namespace: dwmud
+spec:
+  entryPoints:
+    - https
+  routes:
+    - kind: Rule
+      match: Host(`pkgs.dwmud.fyi`)
+      services:
+        - name: dwmud-pkgs
+          port: 8080
+  tls:
+    certResolver: letsencrypt
