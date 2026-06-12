@@ -9,6 +9,14 @@
       "sha256": "4b0868b39abefc56b20acc0f9484ddaf3769a867a761a04ff4cb4567874bc5ae"
     },
     {
+      "package": "luggage",
+      "version": "1.10.9",
+      "type": "rpm",
+      "arch": "x86_64",
+      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.10.9/Luggage-1.10.9-1.x86_64.rpm",
+      "sha256": "df45b7e3be228f93dbcbaea7cbbdfe858510ef8c434c9ebf25a35001269b0f7d"
+    },
+    {
       "package": "luggage-desktop",
       "version": "1.10.9",
       "type": "arch",
