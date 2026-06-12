@@ -7,6 +7,14 @@
       "arch": "amd64",
       "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.10.9/Luggage_1.10.9_amd64.deb",
       "sha256": "4b0868b39abefc56b20acc0f9484ddaf3769a867a761a04ff4cb4567874bc5ae"
+    },
+    {
+      "package": "luggage",
+      "version": "1.10.9",
+      "type": "arch",
+      "arch": "x86_64",
+      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.10.9/luggage-1.10.9-1-x86_64.pkg.tar.zst",
+      "sha256": "34d19d6a38b6fafbdeb5ad14d661ee7370c7ecf861e91a928218a95b0880aa5f"
     }
   ]
 }

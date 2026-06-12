@@ -31,6 +31,15 @@ cover package integrity. We never re-sign someone else's artifact.
 2. Add an entry to `manifest.json` (`sha256sum` the file first).
 3. Commit + push to main. CI does the rest (~2 min).
 
+### Arch packages
+
+There's no upstream `.pkg.tar.zst` — we repackage the .deb via
+`packaging/arch/luggage/PKGBUILD` (the standard `-bin` pattern, dependencies mapped
+to Arch package names). For a new Luggage release: bump `pkgver` + `sha256sums`,
+`makepkg -f`, upload the resulting `.pkg.tar.zst` to the same release, add the
+manifest entry. The pacman db is signed by the same key; packages are covered by
+the db's checksums (`SigLevel = PackageNever DatabaseRequired`).
+
 ## Keys + secrets
 
 - Signing key: `dwmud.FYI Package Repository <pkgs@dwmud.fyi>` / `1D19FE3C95B59712`,

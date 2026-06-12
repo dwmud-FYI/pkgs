@@ -31,6 +31,19 @@ sudo dnf install luggage</pre>
 <p class="muted">The rpm repo is live but waiting on its first package — configure it now and
 <code>dnf</code> picks Luggage up the moment it lands.</p>
 
+<h2>Arch Linux (pacman)</h2>
+<pre>curl -fsSL https://pkgs.dwmud.fyi/key.asc | sudo pacman-key --add -
+sudo pacman-key --lsign-key 1D19FE3C95B59712
+
+# append to /etc/pacman.conf:
+[dwmud]
+SigLevel = PackageNever DatabaseRequired
+Server = https://pkgs.dwmud.fyi/arch
+
+sudo pacman -Sy luggage</pre>
+<p class="muted">Packages are repackaged from upstream's release artifacts; the signed
+database's checksums cover package integrity.</p>
+
 <h2>Signing</h2>
 <p>Repository metadata is signed with
 <a href="/key.asc">dwmud.FYI Package Repository &lt;pkgs@dwmud.fyi&gt;</a>

@@ -14,6 +14,17 @@ COPY . .
 RUN --mount=type=secret,id=gpgkey \
     GPG_KEY_FILE=/run/secrets/gpgkey ./scripts/build-repos.sh
 
+# pacman tree builds in a real Arch stage — repo-add isn't usefully packaged
+# anywhere else. Same secret mount, db-signed by the same key.
+FROM archlinux:base AS archbuilder
+RUN pacman -Sy --noconfirm --needed jq curl ca-certificates && rm -rf /var/cache/pacman/pkg
+WORKDIR /build
+COPY manifest.json ./
+COPY scripts/build-arch-repo.sh scripts/
+RUN --mount=type=secret,id=gpgkey \
+    GPG_KEY_FILE=/run/secrets/gpgkey ./scripts/build-arch-repo.sh
+
 FROM dhi.io/nginx:1-alpine3.23
 COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /build/public /usr/share/nginx/html
+COPY --from=archbuilder /build/public/arch /usr/share/nginx/html/arch

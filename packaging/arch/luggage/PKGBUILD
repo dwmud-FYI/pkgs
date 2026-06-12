@@ -1,0 +1,22 @@
+# Maintainer: dwmud.FYI <pkgs@dwmud.fyi>
+# Binary repackage of Carlos's upstream .deb — same artifact the apt repo serves,
+# unpacked into a proper pacman package. Rebuild for a new release:
+#   update pkgver + sha256sums, then makepkg -f
+pkgname=luggage
+pkgver=1.10.9
+pkgrel=1
+pkgdesc="Luggage — A Modern Discworld MUD Client"
+arch=('x86_64')
+url="https://callmecarlos.com"
+license=('LicenseRef-proprietary')
+depends=('webkit2gtk-4.1' 'gtk3' 'libayatana-appindicator')
+options=('!strip')
+source=("https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v${pkgver}/Luggage_${pkgver}_amd64.deb")
+sha256sums=('4b0868b39abefc56b20acc0f9484ddaf3769a867a761a04ff4cb4567874bc5ae')
+noextract=("Luggage_${pkgver}_amd64.deb")
+
+package() {
+    cd "$srcdir"
+    bsdtar -xf "Luggage_${pkgver}_amd64.deb" data.tar.gz
+    bsdtar -xzf data.tar.gz -C "$pkgdir"
+}
