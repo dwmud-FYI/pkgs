@@ -9,12 +9,12 @@
       "sha256": "4b0868b39abefc56b20acc0f9484ddaf3769a867a761a04ff4cb4567874bc5ae"
     },
     {
-      "package": "luggage",
+      "package": "luggage-desktop",
       "version": "1.10.9",
       "type": "arch",
       "arch": "x86_64",
-      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.10.9/luggage-1.10.9-1-x86_64.pkg.tar.zst",
-      "sha256": "34d19d6a38b6fafbdeb5ad14d661ee7370c7ecf861e91a928218a95b0880aa5f"
+      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.10.9/luggage-desktop-1.10.9-1-x86_64.pkg.tar.zst",
+      "sha256": "a391c64dcfd594d4e7f3e9e93cb9af72cccb900dbec1dd4a4a71f2770873daf7"
     }
   ]
 }

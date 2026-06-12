@@ -31,14 +31,22 @@ cover package integrity. We never re-sign someone else's artifact.
 2. Add an entry to `manifest.json` (`sha256sum` the file first).
 3. Commit + push to main. CI does the rest (~2 min).
 
-### Arch packages
+### Arch packages + AUR
 
-There's no upstream `.pkg.tar.zst` — we repackage the .deb via
-`packaging/arch/luggage/PKGBUILD` (the standard `-bin` pattern, dependencies mapped
-to Arch package names). For a new Luggage release: bump `pkgver` + `sha256sums`,
-`makepkg -f`, upload the resulting `.pkg.tar.zst` to the same release, add the
-manifest entry. The pacman db is signed by the same key; packages are covered by
-the db's checksums (`SigLevel = PackageNever DatabaseRequired`).
+There's no upstream `.pkg.tar.zst` — `packaging/arch/luggage-desktop/PKGBUILD`
+repackages the .deb (sourced from Carlos's stable URL, deps mapped to Arch names,
+.desktop Categories fixed). That one PKGBUILD drives **both** Arch channels:
+
+- **binary repo** — for a new release: bump `pkgver` + `sha256sums`, `makepkg -f`,
+  upload the `.pkg.tar.zst` to the release, add the manifest entry. The pacman db
+  is signed by the repo key; packages are covered by the db's checksums
+  (`SigLevel = PackageNever DatabaseRequired`).
+- **AUR** ([`luggage-desktop`](https://aur.archlinux.org/packages/luggage-desktop))
+  — CI regenerates `.SRCINFO` from the PKGBUILD and pushes to the AUR git remote
+  whenever they differ from what's published (`scripts/publish-aur.sh`, runs after
+  every successful repo build, no-ops when current). Pushes authenticate with the
+  dedicated `AUR_SSH_KEY` CI key; AUR host keys are pinned in
+  `packaging/aur/known_hosts`, no TOFU at run time.
 
 ## Keys + secrets
 

@@ -40,8 +40,11 @@ sudo pacman-key --lsign-key 1D19FE3C95B59712
 SigLevel = PackageNever DatabaseRequired
 Server = https://pkgs.dwmud.fyi/arch
 
-sudo pacman -Sy luggage</pre>
-<p class="muted">Packages are repackaged from upstream's release artifacts; the signed
+sudo pacman -Sy luggage-desktop</pre>
+<p class="muted">Prefer the AUR? The same package is published as
+<a href="https://aur.archlinux.org/packages/luggage-desktop">luggage-desktop</a> —
+<code>yay -S luggage-desktop</code> builds it from upstream's artifact directly.
+Repo packages are repackaged from upstream's release artifacts; the signed
 database's checksums cover package integrity.</p>
 
 <h2>Signing</h2>

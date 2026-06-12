@@ -50,3 +50,19 @@ jobs:
           kubectl -n dwmud set image deployment/dwmud-pkgs \
             pkgs="$IMAGE:${{ github.run_number }}"
           kubectl -n dwmud rollout status deployment/dwmud-pkgs --timeout=180s
+
+  # Keep the AUR listing in step with the same PKGBUILD that built the binary repo.
+  # Idempotent — identical PKGBUILD/.SRCINFO on the AUR means no push. Gated behind
+  # build-push so a broken repo build never advances the AUR either.
+  aur-publish:
+    runs-on: dwmud
+    needs: build-push
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Push PKGBUILD to AUR
+        run: |
+          umask 077
+          printf '%s' "${{ secrets.AUR_SSH_KEY }}" > /tmp/aur_key
+          AUR_KEY_FILE=/tmp/aur_key ./scripts/publish-aur.sh luggage-desktop
+          rm -f /tmp/aur_key
