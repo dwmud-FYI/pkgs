@@ -6,9 +6,11 @@
 # (build-arch-repo.sh serves the built package) and the AUR listing (this script).
 # .SRCINFO is regenerated from the PKGBUILD every run — never hand-edited.
 #
-# Anonymous clone over https (no auth needed to read), push over ssh with the
-# dedicated CI key (AUR_KEY_FILE). Host keys are pinned from packaging/aur/known_hosts
-# — no ssh-keyscan TOFU at run time. Idempotent: identical PKGBUILD+.SRCINFO = no push.
+# Clone AND push over ssh with the dedicated CI key (AUR_KEY_FILE) — the AUR's edge
+# intermittently resets anonymous https from datacenter networks, and ssh is the
+# channel we need for the push anyway. Clone retries 3x for the AUR's flaky moments.
+# Host keys are pinned from packaging/aur/known_hosts — no ssh-keyscan TOFU at run
+# time. Idempotent: identical PKGBUILD+.SRCINFO = no push.
 ###
 set -euo pipefail
 
@@ -34,7 +36,20 @@ docker run --rm \
         # regenerate .SRCINFO from the PKGBUILD (makepkg refuses root; builder does it)
         su builder -c "mkdir -p /tmp/gen && cp /pkgsrc/PKGBUILD /tmp/gen/ && cd /tmp/gen && makepkg --printsrcinfo > .SRCINFO"
 
-        su builder -c "git clone -q https://aur.archlinux.org/$PKG.git /tmp/aur"
+        export GIT_SSH="/usr/local/bin/aur-ssh"
+        printf "#!/bin/sh\nexec ssh -i /home/builder/.ssh/aur_key -o UserKnownHostsFile=/home/builder/.ssh/known_hosts -o IdentitiesOnly=yes \"\$@\"\n" > /usr/local/bin/aur-ssh
+        chmod 755 /usr/local/bin/aur-ssh
+
+        ok=""
+        for attempt in 1 2 3; do
+            if su builder -c "GIT_SSH=/usr/local/bin/aur-ssh git clone -q ssh://aur@aur.archlinux.org/$PKG.git /tmp/aur"; then
+                ok=1; break
+            fi
+            echo "clone attempt $attempt failed; retrying in 10s"
+            rm -rf /tmp/aur
+            sleep 10
+        done
+        [ -n "$ok" ] || { echo "could not clone AUR repo after 3 attempts"; exit 1; }
         cd /tmp/aur
         cp /pkgsrc/PKGBUILD /tmp/gen/.SRCINFO .
         if su builder -c "cd /tmp/aur && git diff --quiet"; then
@@ -49,10 +64,9 @@ docker run --rm \
             cd /tmp/aur &&
             git config user.name \"dwmud.FYI\" &&
             git config user.email \"pkgs@dwmud.fyi\" &&
-            git remote set-url --push origin ssh://aur@aur.archlinux.org/$PKG.git &&
             git add PKGBUILD .SRCINFO &&
             git commit -q -m \"Update to $ver-$rel\" &&
-            GIT_SSH_COMMAND=\"ssh -i /home/builder/.ssh/aur_key -o UserKnownHostsFile=/home/builder/.ssh/known_hosts -o IdentitiesOnly=yes\" git push origin master
+            GIT_SSH=/usr/local/bin/aur-ssh git push origin master
         "
         echo "AUR updated: $PKG $ver-$rel"
     '
