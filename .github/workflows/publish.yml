@@ -37,7 +37,7 @@ jobs:
       - name: Build and push
         run: |
           umask 077
-          printf '%s' "${{ secrets.GPG_PRIVATE_KEY }}" > /tmp/gpgkey.asc
+          printf '%s\n' "${{ secrets.GPG_PRIVATE_KEY }}" > /tmp/gpgkey.asc
           DOCKER_BUILDKIT=1 docker build \
             --secret id=gpgkey,src=/tmp/gpgkey.asc \
             -t "$IMAGE:${{ github.run_number }}" -t "$IMAGE:latest" .
@@ -74,7 +74,9 @@ jobs:
       # mounts as an empty directory instead.
       - name: Push PKGBUILD to AUR
         run: |
+          # the trailing newline is load-bearing: OpenSSH refuses a PEM whose END line
+          # isn't newline-terminated ("error in libcrypto: unsupported")
           umask 077
-          printf '%s' "${{ secrets.AUR_SSH_KEY }}" > "$RUNNER_TEMP/aur_key"
+          printf '%s\n' "${{ secrets.AUR_SSH_KEY }}" > "$RUNNER_TEMP/aur_key"
           AUR_KEY_FILE="$RUNNER_TEMP/aur_key" ./scripts/publish-aur.sh luggage-desktop
           rm -f "$RUNNER_TEMP/aur_key"
