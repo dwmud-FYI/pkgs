@@ -54,7 +54,9 @@ cp "$ROOT/conf/distributions" "$WORK/apt/conf/distributions"
 for i in $(seq 0 $((count - 1))); do
     [ "$(jq -r ".artifacts[$i].type" "$ROOT/manifest.json")" = "deb" ] || continue
     file="$WORK/pool/$(basename "$(jq -r ".artifacts[$i].url" "$ROOT/manifest.json")")"
-    reprepro -b "$WORK/apt" includedeb stable "$file"
+    # -S/-P supply Section/Priority when the upstream control omits them (Luggage's
+    # tauri-built .deb has no Section, and we don't rewrite upstream artifacts)
+    reprepro -S games -P optional -b "$WORK/apt" includedeb stable "$file"
 done
 mkdir -p "$OUT/apt"
 cp -r "$WORK/apt/dists" "$WORK/apt/pool" "$OUT/apt/" 2>/dev/null || true
