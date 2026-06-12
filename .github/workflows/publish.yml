@@ -63,9 +63,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # the key file must live under the _work volume (RUNNER_TEMP), not /tmp — docker
+      # bind mounts resolve on the DinD daemon's filesystem, and only _work is shared
+      # between the runner container and the daemon sidecar. A /tmp path silently
+      # mounts as an empty directory instead.
       - name: Push PKGBUILD to AUR
         run: |
           umask 077
-          printf '%s' "${{ secrets.AUR_SSH_KEY }}" > /tmp/aur_key
-          AUR_KEY_FILE=/tmp/aur_key ./scripts/publish-aur.sh luggage-desktop
-          rm -f /tmp/aur_key
+          printf '%s' "${{ secrets.AUR_SSH_KEY }}" > "$RUNNER_TEMP/aur_key"
+          AUR_KEY_FILE="$RUNNER_TEMP/aur_key" ./scripts/publish-aur.sh luggage-desktop
+          rm -f "$RUNNER_TEMP/aur_key"
