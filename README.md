@@ -19,10 +19,9 @@ sudo apt update
 sudo apt install luggage
 ```
 
-> Heads-up for Ubuntu 24.04 / Debian 12: upstream's .deb currently depends on
-> `libappindicator3-1`, which those releases replaced with the ayatana fork — the
-> install fails dependency resolution until upstream updates its Depends line.
-> Ubuntu 22.04 installs cleanly.
+> Heads-up: as of 1.14.0 upstream's .deb depends on `libayatana-appindicator3-1`
+> (the ayatana fork), so Ubuntu 24.04 / Debian 12 install cleanly. Older releases
+> need that package available — it's in Ubuntu's universe (20.04+) and Debian 11+.
 
 ### Fedora / RHEL-family (dnf)
 
