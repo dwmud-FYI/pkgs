@@ -19,9 +19,12 @@ sudo apt update
 sudo apt install luggage
 ```
 
-> Heads-up: as of 1.14.0 upstream's .deb depends on `libayatana-appindicator3-1`
-> (the ayatana fork), so Ubuntu 24.04 / Debian 12 install cleanly. Older releases
-> need that package available — it's in Ubuntu's universe (20.04+) and Debian 11+.
+> Tray-icon dependency: upstream's .deb/.rpm pin a single appindicator library
+> that flip-flops between builds (libappindicator3 vs the ayatana fork), which
+> breaks apt/dnf resolution on whichever distros ship only the other one. Our
+> packaged deb and rpm replace it with an either/or dependency
+> (`libayatana-appindicator3-1 | libappindicator3-1`), so both current and older
+> releases resolve; the binary loads whichever is installed. No user action needed.
 
 ### Fedora / RHEL-family (dnf)
 
