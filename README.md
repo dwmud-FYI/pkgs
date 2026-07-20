@@ -8,6 +8,23 @@ This repo is deliberately public: it holds the manifest, the build scripts, and 
 *public* signing key — nothing secret — and anyone trusting our key can audit
 exactly how the repos are built.
 
+## System requirements
+
+Luggage's binary is built against **glibc 2.39**, so it only runs on reasonably
+current systems:
+
+| Works | Too old (won't run) |
+|-------|---------------------|
+| Ubuntu 24.04+, Debian 13+ | Ubuntu 22.04 and older, Debian 12 |
+| Fedora 40+ | Fedora 39 and older, RHEL/Rocky/Alma 9 |
+| Arch / any rolling distro | |
+
+The packages declare this floor (`libc6 >= 2.39` on the deb, a `GLIBC_2.39` requirement
+on the rpm), so apt/dnf refuse to install on an older system with a clear message
+rather than installing something that fails at launch. If you're on an older release,
+upgrade the OS (e.g. Ubuntu `do-release-upgrade` to 24.04) or run Luggage inside a
+[distrobox](https://distrobox.it/) container based on a newer image.
+
 ## Installing
 
 ### Debian / Ubuntu (apt)

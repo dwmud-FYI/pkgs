@@ -19,6 +19,14 @@
 <a href="https://callmecarlos.com/">Luggage</a>, Carlos's Discworld MUD client.
 Run by <a href="https://dwmud.fyi/">dwmud.FYI</a>.</p>
 
+<h2>Requirements</h2>
+<p>Luggage's binary needs <strong>glibc 2.39 or newer</strong>. It runs on Ubuntu 24.04+,
+Debian 13+, Fedora 40+, and rolling distros like Arch. On anything older (Ubuntu 22.04,
+Debian 12, Fedora 39, RHEL/Rocky/Alma 9) apt and dnf refuse to install it with a
+dependency error — the binary would otherwise only fail at launch with
+<code>GLIBC_2.39 not found</code>. Upgrade the OS, or run Luggage in a
+<a href="https://distrobox.it/">distrobox</a> container built from a newer image.</p>
+
 <h2>Debian / Ubuntu (apt)</h2>
 <pre>sudo curl -fsSL https://pkgs.dwmud.fyi/key.asc -o /etc/apt/keyrings/dwmud.asc
 echo "deb [signed-by=/etc/apt/keyrings/dwmud.asc] https://pkgs.dwmud.fyi/apt stable main" | sudo tee /etc/apt/sources.list.d/dwmud.list
@@ -28,8 +36,8 @@ sudo apt install luggage</pre>
 <h2>Fedora / RHEL-family (dnf)</h2>
 <pre>sudo curl -fsSL https://pkgs.dwmud.fyi/rpm/dwmud.repo -o /etc/yum.repos.d/dwmud.repo
 sudo dnf install luggage</pre>
-<p class="muted">The rpm repo is live but waiting on its first package — configure it now and
-<code>dnf</code> picks Luggage up the moment it lands.</p>
+<p class="muted">Needs Fedora 40+ (glibc 2.39). On RHEL/Rocky/Alma 9 or Fedora 39 the
+install is refused — see Requirements above.</p>
 
 <h2>Arch Linux (pacman)</h2>
 <pre>curl -fsSL https://pkgs.dwmud.fyi/key.asc | sudo pacman-key --add -

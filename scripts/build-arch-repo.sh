@@ -29,6 +29,9 @@ for i in $(seq 0 $((count - 1))); do
     echo "fetch $(basename "$url")"
     curl -fsSL --retry 3 -o "$file" "$url"
     echo "$sha  $file" | sha256sum -c - >/dev/null || { echo "sha256 MISMATCH for $url"; exit 1; }
+    # content guard: same reason as build-repos.sh — never ship a build missing the map db
+    bsdtar -tf "$file" | grep 'usr/lib/Luggage/_up_/quow-data/_quowmap_database.db' >/dev/null \
+        || { echo "GUARD FAIL: $(basename "$file") is missing the map db"; exit 1; }
     pkgs=$((pkgs + 1))
 done
 

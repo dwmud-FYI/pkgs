@@ -2,27 +2,27 @@
   "artifacts": [
     {
       "package": "luggage",
-      "version": "1.14.0-2",
+      "version": "1.14.0-3",
       "type": "deb",
       "arch": "amd64",
-      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.14.0-2/luggage_1.14.0-2_amd64.deb",
-      "sha256": "8d33faa50091fb0c49019e269c551021495264fc9d6917f5975694513d19ce88"
+      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.14.0-3/luggage_1.14.0-3_amd64.deb",
+      "sha256": "09de32f5f85caa94c035ffaf97df25be8a64b6bedd9846c3f3ad1fa2e6259e06"
     },
     {
       "package": "luggage",
-      "version": "1.14.0-2",
+      "version": "1.14.0-3",
       "type": "rpm",
       "arch": "x86_64",
-      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.14.0-2/Luggage-1.14.0-2.x86_64.rpm",
-      "sha256": "8dff356ac6865aa1ff25d866c1cd067190500c75d5a50a14605b5e73643542bf"
+      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.14.0-3/Luggage-1.14.0-3.x86_64.rpm",
+      "sha256": "6803d511f1d195a4e47a74a0484437c9894d4b298c41aa5b335274dfc6471bbf"
     },
     {
       "package": "luggage-desktop",
-      "version": "1.14.0-2",
+      "version": "1.14.0-3",
       "type": "arch",
       "arch": "x86_64",
-      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.14.0-2/luggage-desktop-1.14.0-2-x86_64.pkg.tar.zst",
-      "sha256": "a03a0164e83b8fc30e1ed6f83cc2dc1c6a867d616b79707d8454bd3945c6bb74"
+      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.14.0-3/luggage-desktop-1.14.0-3-x86_64.pkg.tar.zst",
+      "sha256": "5b6cb1062a60f230d1e9ce19ed03cf371a60755267ee125e1b686458133fc8a5"
     }
   ]
 }

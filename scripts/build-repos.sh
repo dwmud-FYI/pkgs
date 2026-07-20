@@ -47,6 +47,23 @@ for i in $(seq 0 $((count - 1))); do
 done
 
 ###
+# Content guard — upstream once shipped a 1.14.0 build with the whole quow-data map
+# database missing and we published it because nothing looked inside. Assert the map
+# db is present in every deb/rpm before it goes anywhere. (arch pkg is checked in
+# build-arch-repo.sh where bsdtar is native.)
+###
+MAPDB='usr/lib/Luggage/_up_/quow-data/_quowmap_database.db'
+for i in $(seq 0 $((count - 1))); do
+    type=$(jq -r ".artifacts[$i].type" "$ROOT/manifest.json")
+    file="$WORK/pool/$(basename "$(jq -r ".artifacts[$i].url" "$ROOT/manifest.json")")"
+    case "$type" in
+        deb) dpkg-deb --contents "$file" | grep "$MAPDB" >/dev/null || { echo "GUARD FAIL: $(basename "$file") is missing the map db"; exit 1; } ;;
+        rpm) rpm -qlp "$file" 2>/dev/null | grep "$MAPDB" >/dev/null || { echo "GUARD FAIL: $(basename "$file") is missing the map db"; exit 1; } ;;
+    esac
+done
+echo "content guard: map db present in all deb/rpm artifacts"
+
+###
 # apt tree — reprepro builds dists/ + pool/ and signs the Release/InRelease
 # (SignWith in conf/distributions).
 ###
@@ -81,6 +98,9 @@ enabled=1
 gpgcheck=0
 repo_gpgcheck=1
 gpgkey=$BASE_URL/key.asc
+# short expiry: we replace files in place on re-releases, so stale metadata 404s on
+# the old filename. 1h keeps that window small (default is 48h).
+metadata_expire=1h
 EOF
 
 ###
