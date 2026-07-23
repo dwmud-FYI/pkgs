@@ -55,7 +55,7 @@ spec:
     - https
   routes:
     - kind: Rule
-      match: Host(`pkgs.dwmud.fyi`)
+      match: Host(`pkgs.dwmud.fyi`, `repo.muds.fyi`)
       services:
         - name: dwmud-pkgs
           port: 8080
