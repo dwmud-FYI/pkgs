@@ -52,7 +52,9 @@ docker run --rm \
         [ -n "$ok" ] || { echo "could not clone AUR repo after 3 attempts"; exit 1; }
         cd /tmp/aur
         cp /pkgsrc/PKGBUILD /tmp/gen/.SRCINFO .
-        if su builder -c "cd /tmp/aur && git diff --quiet"; then
+        # porcelain (not git diff) so a brand-new package (empty clone -> untracked
+        # files) still counts as a change; git diff ignores untracked and would skip.
+        if su builder -c "cd /tmp/aur && [ -z \"\$(git status --porcelain)\" ]"; then
             echo "AUR already current for $PKG — nothing to push."
             exit 0
         fi
