@@ -2,7 +2,7 @@
 
 apt (.deb), rpm, and pacman repos — plus the AUR listing — for the Discworld MUD
 community, served at <https://pkgs.dwmud.fyi>. Currently distributes
-[Luggage](https://callmecarlos.com/), Carlos's Discworld MUD client.
+[Luggage](https://luggage.gg/), Carlos's Discworld MUD client.
 
 This repo is deliberately public: it holds the manifest, the build scripts, and the
 *public* signing key — nothing secret — and anyone trusting our key can audit
