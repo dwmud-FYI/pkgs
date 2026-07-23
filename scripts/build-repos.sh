@@ -38,7 +38,8 @@ gpg --batch --import "$GPG_KEY_FILE"
 count=$(jq '.artifacts | length' "$ROOT/manifest.json")
 echo "manifest: $count artifact(s)"
 for i in $(seq 0 $((count - 1))); do
-    url=$(jq -r ".artifacts[$i].url" "$ROOT/manifest.json")
+    url=$(jq -r ".artifacts[$i].url // empty" "$ROOT/manifest.json")
+    [ -n "$url" ] || continue   # arch entries built in-image carry no url
     sha=$(jq -r ".artifacts[$i].sha256" "$ROOT/manifest.json")
     file="$WORK/pool/$(basename "$url")"
     echo "fetch $(basename "$url")"
@@ -54,6 +55,7 @@ done
 ###
 MAPDB='usr/lib/Luggage/_up_/quow-data/_quowmap_database.db'
 for i in $(seq 0 $((count - 1))); do
+    [ "$(jq -r ".artifacts[$i].package" "$ROOT/manifest.json")" = "luggage" ] || continue
     type=$(jq -r ".artifacts[$i].type" "$ROOT/manifest.json")
     file="$WORK/pool/$(basename "$(jq -r ".artifacts[$i].url" "$ROOT/manifest.json")")"
     case "$type" in

@@ -72,11 +72,17 @@ jobs:
       # bind mounts resolve on the DinD daemon's filesystem, and only _work is shared
       # between the runner container and the daemon sidecar. A /tmp path silently
       # mounts as an empty directory instead.
-      - name: Push PKGBUILD to AUR
+      - name: Push PKGBUILDs to AUR
         run: |
           # the trailing newline is load-bearing: OpenSSH refuses a PEM whose END line
           # isn't newline-terminated ("error in libcrypto: unsupported")
           umask 077
           printf '%s\n' "${{ secrets.AUR_SSH_KEY }}" > "$RUNNER_TEMP/aur_key"
-          AUR_KEY_FILE="$RUNNER_TEMP/aur_key" ./scripts/publish-aur.sh luggage-desktop
+          # one AUR package per arch entry in the manifest — so a package reaches the
+          # AUR on the same commit that activates its pacman build, not before.
+          for pkg in $(jq -r '.artifacts[] | select(.type=="arch") | .package' manifest.json | sort -u); do
+              echo "::group::AUR $pkg"
+              AUR_KEY_FILE="$RUNNER_TEMP/aur_key" ./scripts/publish-aur.sh "$pkg"
+              echo "::endgroup::"
+          done
           rm -f "$RUNNER_TEMP/aur_key"

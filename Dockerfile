@@ -17,9 +17,11 @@ RUN --mount=type=secret,id=gpgkey \
 # pacman tree builds in a real Arch stage — repo-add isn't usefully packaged
 # anywhere else. Same secret mount, db-signed by the same key.
 FROM archlinux:base AS archbuilder
-RUN pacman -Sy --noconfirm --needed jq curl ca-certificates && rm -rf /var/cache/pacman/pkg
+# base-devel: makepkg + fakeroot, for arch entries built in-image from a PKGBUILD
+RUN pacman -Sy --noconfirm --needed jq curl ca-certificates base-devel && rm -rf /var/cache/pacman/pkg
 WORKDIR /build
 COPY manifest.json ./
+COPY packaging/arch packaging/arch
 COPY scripts/build-arch-repo.sh scripts/
 RUN --mount=type=secret,id=gpgkey \
     GPG_KEY_FILE=/run/secrets/gpgkey ./scripts/build-arch-repo.sh

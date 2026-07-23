@@ -1,0 +1,109 @@
+name: add-package
+
+# Add or update a package in the manifest from a release in another repo, then kick
+# the publish pipeline. Dispatchable from the Actions tab here, or via the API from
+# the source repo (see KilnMUD-Releases/.github/workflows/publish-to-pkgs.yml).
+#
+# Generic: works for any package whose release ships a Tauri-style .deb/.rpm. If
+# packaging/arch/<pkgbase>/PKGBUILD exists, pacman + AUR come along too; otherwise
+# it's apt + rpm only. Assumes a package's deb/rpm/arch all share the <pkgbase> key
+# in the manifest (true for anything added through here).
+on:
+  workflow_dispatch:
+    inputs:
+      source_repo:
+        description: "owner/repo holding the release (e.g. SeanStoves/KilnMUD-Releases)"
+        required: true
+      tag:
+        description: "release tag (e.g. v0.6.0)"
+        required: true
+      pkgbase:
+        description: "manifest package key + packaging/arch/<pkgbase> dir (e.g. kilnmud)"
+        required: true
+      deb_glob:
+        description: "asset glob for the .deb"
+        required: false
+        default: "*_amd64.deb"
+      rpm_glob:
+        description: "asset glob for the .rpm"
+        required: false
+        default: "*.x86_64.rpm"
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SRC: ${{ inputs.source_repo }}
+      TAG: ${{ inputs.tag }}
+      PKGBASE: ${{ inputs.pkgbase }}
+      DEB_GLOB: ${{ inputs.deb_glob }}
+      RPM_GLOB: ${{ inputs.rpm_glob }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve + fetch artifacts
+        id: fetch
+        run: |
+          set -euo pipefail
+          rm -rf _dl && mkdir _dl
+          gh release download "$TAG" -R "$SRC" -p "$DEB_GLOB" -D _dl
+          gh release download "$TAG" -R "$SRC" -p "$RPM_GLOB" -D _dl
+          deb=$(ls _dl/*.deb | head -1); rpm=$(ls _dl/*.rpm | head -1)
+          base="https://github.com/$SRC/releases/download/$TAG"
+          {
+            echo "ver=${TAG#v}"
+            echo "deburl=$base/$(basename "$deb")"
+            echo "rpmurl=$base/$(basename "$rpm")"
+            echo "debsha=$(sha256sum "$deb" | cut -d' ' -f1)"
+            echo "rpmsha=$(sha256sum "$rpm" | cut -d' ' -f1)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Update manifest + PKGBUILD
+        env:
+          VER: ${{ steps.fetch.outputs.ver }}
+          DEBURL: ${{ steps.fetch.outputs.deburl }}
+          RPMURL: ${{ steps.fetch.outputs.rpmurl }}
+          DEBSHA: ${{ steps.fetch.outputs.debsha }}
+          RPMSHA: ${{ steps.fetch.outputs.rpmsha }}
+        run: |
+          set -euo pipefail
+          arch='[]'
+          if [ -f "packaging/arch/$PKGBASE/PKGBUILD" ]; then
+            arch=$(jq -n --arg p "$PKGBASE" --arg ver "$VER" --arg pb "packaging/arch/$PKGBASE" \
+              '[{package:$p, version:$ver, type:"arch", arch:"x86_64", pkgbuild:$pb}]')
+          fi
+          jq --arg p "$PKGBASE" --arg ver "$VER" \
+             --arg deburl "$DEBURL" --arg rpmurl "$RPMURL" \
+             --arg debsha "$DEBSHA" --arg rpmsha "$RPMSHA" --argjson arch "$arch" '
+            .artifacts |= (map(select(.package != $p))) + [
+              {package:$p, version:$ver, type:"deb", arch:"amd64",  url:$deburl, sha256:$debsha},
+              {package:$p, version:$ver, type:"rpm", arch:"x86_64", url:$rpmurl, sha256:$rpmsha}
+            ] + $arch
+          ' manifest.json > manifest.tmp && mv manifest.tmp manifest.json
+          jq . manifest.json
+
+          if [ -f "packaging/arch/$PKGBASE/PKGBUILD" ]; then
+            sed -i -E "s/^pkgver=.*/pkgver=$VER/; s/^pkgrel=.*/pkgrel=1/; s/^sha256sums=.*/sha256sums=('$DEBSHA')/" \
+              "packaging/arch/$PKGBASE/PKGBUILD"
+            grep -E '^pkgver|^pkgrel|^sha256sums' "packaging/arch/$PKGBASE/PKGBUILD"
+          fi
+
+      - name: Commit + trigger publish
+        env:
+          VER: ${{ steps.fetch.outputs.ver }}
+        run: |
+          set -euo pipefail
+          git config user.name "dwmud.FYI CI"
+          git config user.email "pkgs@dwmud.fyi"
+          git add manifest.json packaging/arch
+          if git diff --cached --quiet; then
+            echo "no changes — $PKGBASE $VER already current"; exit 0
+          fi
+          git commit -m "$PKGBASE $VER: add/update via add-package"
+          git push
+          # a GITHUB_TOKEN commit does not fire the push-based publish, so dispatch it
+          gh workflow run publish.yml
