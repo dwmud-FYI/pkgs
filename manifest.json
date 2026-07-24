@@ -30,7 +30,7 @@
       "type": "deb",
       "arch": "amd64",
       "url": "https://github.com/SeanStoves/KilnMUD-Releases/releases/download/v0.13.0/KilnMUD_0.13.0_amd64.deb",
-      "sha256": "980abc2c61ca5fe7103b698b19d373957e2f8e39475a9248def8814e4a83ffe4"
+      "sha256": "4da6c1dd8ee244ed457d8b1db916861b65b28481bb27909bc171856a5812e75f"
     },
     {
       "package": "kilnmud",
@@ -38,7 +38,7 @@
       "type": "rpm",
       "arch": "x86_64",
       "url": "https://github.com/SeanStoves/KilnMUD-Releases/releases/download/v0.13.0/KilnMUD-0.13.0-1.x86_64.rpm",
-      "sha256": "3ba200ded7fd105491444fc970617599935f08e20c87d068636a16cf0d340593"
+      "sha256": "76e95c969a301bfbbbf93685ef69933b1c6505e806b5f8d6d0aed1afe229b65d"
     },
     {
       "package": "kilnmud",
