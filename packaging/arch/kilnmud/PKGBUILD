@@ -15,7 +15,7 @@ depends=('webkit2gtk-4.1' 'gtk3' 'gdk-pixbuf2' 'cairo' 'glib2' 'dbus' 'libsoup3'
          'gcc-libs' 'glibc' 'hicolor-icon-theme')
 options=('!strip' '!debug')
 source=("https://github.com/SeanStoves/KilnMUD-Releases/releases/download/v${pkgver}/KilnMUD_${pkgver}_amd64.deb")
-sha256sums=('3c027ee7e1fd3157b0fbd6fc5cd51a85eaf96df386711457e5c713f2de22984f')
+sha256sums=('3d0057b925565ded78e21f412d5c05f70c5bd27e25da31c36ea34c40f10df808')
 
 package() {
     # makepkg already unpacked the .deb (ar archive) into srcdir
