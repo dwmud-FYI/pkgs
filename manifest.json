@@ -26,23 +26,23 @@
     },
     {
       "package": "kilnmud",
-      "version": "0.56.0",
+      "version": "0.57.0",
       "type": "deb",
       "arch": "amd64",
-      "url": "https://github.com/SeanStoves/KilnMUD-Releases/releases/download/v0.56.0/KilnMUD_0.56.0_amd64.deb",
-      "sha256": "05bb3333da39e621e4264fd817cc418400715e21759fc0970f121ef8d1c43d18"
+      "url": "https://github.com/SeanStoves/KilnMUD-Releases/releases/download/v0.57.0/KilnMUD_0.57.0_amd64.deb",
+      "sha256": "432aaf58f4d799615aba823afcdb7e8b2655251b5cade5e5ec4049e92f25f722"
     },
     {
       "package": "kilnmud",
-      "version": "0.56.0",
+      "version": "0.57.0",
       "type": "rpm",
       "arch": "x86_64",
-      "url": "https://github.com/SeanStoves/KilnMUD-Releases/releases/download/v0.56.0/KilnMUD-0.56.0-1.x86_64.rpm",
-      "sha256": "8ea86c52cc3becb59734361578c2f17acc5308a276607917dcd9475a0c0b7630"
+      "url": "https://github.com/SeanStoves/KilnMUD-Releases/releases/download/v0.57.0/KilnMUD-0.57.0-1.x86_64.rpm",
+      "sha256": "2166a6dbfec2659102f7951e7b02c9c2d2b46eee2a681dd1b589466104697149"
     },
     {
       "package": "kilnmud",
-      "version": "0.56.0",
+      "version": "0.57.0",
       "type": "arch",
       "arch": "x86_64",
       "pkgbuild": "packaging/arch/kilnmud"
