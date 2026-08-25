@@ -18,6 +18,8 @@ concurrency:
 jobs:
   build-push:
     runs-on: dwmud
+    # backstop: a stalled ghcr push used to hang this step forever (no timeout).
+    timeout-minutes: 25
     permissions:
       contents: read
       packages: write
@@ -42,8 +44,18 @@ jobs:
             --secret id=gpgkey,src=/tmp/gpgkey.asc \
             -t "$IMAGE:${{ github.run_number }}" -t "$IMAGE:latest" .
           rm -f /tmp/gpgkey.asc
-          docker push "$IMAGE:${{ github.run_number }}"
-          docker push "$IMAGE:latest"
+          # ghcr push intermittently stalls after uploading layers (hangs with no
+          # output). timeout + retry so a stuck connection is killed and re-tried
+          # instead of hanging the whole job.
+          for tag in "${{ github.run_number }}" latest; do
+              n=0
+              until timeout 300 docker push "$IMAGE:$tag"; do
+                  n=$((n + 1))
+                  [ "$n" -ge 4 ] && { echo "push of $tag failed after $n attempts"; exit 1; }
+                  echo "push of $tag stalled/failed; retry $n in 15s"
+                  sleep 15
+              done
+          done
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
