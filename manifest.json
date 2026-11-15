@@ -2,27 +2,27 @@
   "artifacts": [
     {
       "package": "luggage",
-      "version": "1.16.0-1",
+      "version": "1.19.1-1",
       "type": "deb",
       "arch": "amd64",
-      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.16.0/luggage_1.16.0-1_amd64.deb",
-      "sha256": "57795188944b751934e12d928027b35e41428bec72a186601fdd0502243ad6ad"
+      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.19.1/luggage_1.19.1-1_amd64.deb",
+      "sha256": "e24a8b64ed1fbd0e8ced36f4d270f97ef58b55bf4bf58dc73db0ddadf4255a5e"
     },
     {
       "package": "luggage",
-      "version": "1.16.0-1",
+      "version": "1.19.1-1",
       "type": "rpm",
       "arch": "x86_64",
-      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.16.0/Luggage-1.16.0-1.x86_64.rpm",
-      "sha256": "51c27b2e45b6d63bc84e2730be561728749bc5b86a9315e4e2f516a94ef8a339"
+      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.19.1/Luggage-1.19.1-1.x86_64.rpm",
+      "sha256": "34ac82db2ea7b8a72d372a434dbae592a4d72f9852e414f95956e003fc6bb131"
     },
     {
       "package": "luggage-desktop",
-      "version": "1.16.0-1",
+      "version": "1.19.1-1",
       "type": "arch",
       "arch": "x86_64",
-      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.16.0/luggage-desktop-1.16.0-1-x86_64.pkg.tar.zst",
-      "sha256": "65aa30c330af95e6a66e0c2385ff13867497a683b8cb0de7ee39ccc2f83dcf6d"
+      "url": "https://github.com/dwmud-fyi/pkgs/releases/download/luggage-v1.19.1/luggage-desktop-1.19.1-1-x86_64.pkg.tar.zst",
+      "sha256": "16bd512fc7c4de3ef5a0df65f8e7c89e4107a942b588b28b555219ad3deedaae"
     },
     {
       "package": "kilnmud",
