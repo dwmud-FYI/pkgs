@@ -26,7 +26,10 @@ docker run --rm \
     -v "$(readlink -f "$AUR_KEY_FILE"):/aur_key_ro:ro" \
     -e PKG="$PKG" \
     archlinux:base bash -ec '
-        pacman -Sy --noconfirm --needed git openssh >/dev/null 2>&1
+        # -Syu, not -Sy: installing git/openssh pulls current deps (e.g. openssl 4),
+        # and -Sy onto the stale base image is a partial upgrade that breaks sonames
+        # (libssl.so=3 vs =4) and aborts pacman. Full upgrade keeps the base coherent.
+        pacman -Syu --noconfirm --needed git openssh >/dev/null 2>&1
 
         useradd -m builder
         install -d -m700 -o builder -g builder /home/builder/.ssh
